@@ -30,7 +30,25 @@ int main(){
 	connect(sock, (struct sockaddr*)&addr, sizeof(addr));
 	printf("Connected to the server.\n");
 
-	bzero(buffer, 1024);
+	while(1){
+		bzero(buffer, sizeof(buffer));
+		printf("Enter the string : ");
+		n = 0;
+		while((buffer[n++] = getchar()) != '\n')
+			;
+		write(sock, buffer, sizeof(buffer));
+		bzero(buffer, sizeof(buffer));
+		read(sock, buffer, sizeof(buffer));
+		printf("From Server : %s", buffer);
+		if((strncmp(buffer, "exit", 4)) == 0) {
+			printf("Client Exit...\n");
+			break;
+		}
+	}
+
+	close(sock);
+
+	/*bzero(buffer, 1024);
 	strcpy(buffer, "Hello , this is client");
 	printf("Client: %s\n", buffer);
 	send(sock, buffer, strlen(buffer), 0);
@@ -41,7 +59,7 @@ int main(){
 
 	close(sock);
 	printf("Disconnected from the server.\n");
-
+	*/
 
 	return 0;
 }

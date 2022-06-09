@@ -36,10 +36,33 @@ int main(){
 	listen(server_sock, 5);
 	printf("Listening...\n");
 
+	addr_size = sizeof(client_addr);
+	client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &addr_size);
+	printf("[+}Client connected.\n");
+
 	while(1){
+		bzero(buffer, 1024);
+		read(client_sock, buffer, sizeof(buffer));
+		printf("From client: %s\t To client : ", buffer);
+		bzero(buffer, 1024);
+		n = 0;
+
+		while((buffer[n++] = getchar()) != '\n')
+			;
+		write (client_sock, buffer, sizeof(buffer));
+
+		if(strncmp("exit", buffer, 4) == 0) {
+			printf("Server Exit...\n");
+			break;
+		}
+	}
+
+	/*while(1){
 		addr_size = sizeof(client_addr);
 		client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &addr_size);
 		printf("[+]Client connected.\n");
+
+
 
 		bzero(buffer, 1024);
 		recv(client_sock, buffer, sizeof(buffer), 0);
@@ -53,7 +76,8 @@ int main(){
 		close(client_sock);
 		printf("[+]Client disconnected.\n\n");	
 	}
+	*/
 
-	
+	close(server_sock);
 	return 0;
 }
